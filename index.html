@@ -45,6 +45,10 @@ main {display:flex; justify-content:center; padding:20px;}
 
 <div class="menu" id="menu">
 
+<div style="text-align:center;font-weight:bold;margin-bottom:10px;">
+八方雲集南雅店<br>電話:02-2272-9292
+</div>
+
 <div class="category" onclick="toggleCategory('cat1',this)">鍋貼類 <span class="arrow">▼</span></div>
 <div id="cat1"></div>
 
@@ -219,7 +223,7 @@ function initRealtime(){
 
   
   db.collection('orders').doc('main').onSnapshot(doc=>{
-    console.log('收到同步資料');{
+    console.log('收到同步資料');
     const data=doc.data()||{};
     let html='';
     let total=0;
