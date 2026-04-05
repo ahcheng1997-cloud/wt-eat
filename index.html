@@ -99,7 +99,7 @@ const db=firebase.firestore();
 
 // ✅ 開啟離線快取（多人同步更穩）
 // ❌ 關閉 persistence（避免多裝置鎖死）
-// try{ db.enablePersistence({synchronizeTabs:true}); }catch(e){ console.warn('persistence fail',e);} } } }  }catch(e){ console.warn('persistence fail',e);}
+// try{ db.enablePersistence({synchronizeTabs:true}); }catch(e){ console.warn('persistence fail',e);}
 
 let userName=localStorage.getItem('userName')||('裝置_'+Math.floor(Math.random()*1000))
 localStorage.setItem('userName',userName)
