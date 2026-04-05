@@ -214,7 +214,12 @@ function saveCart(){
 
 // 🔥 即時訂單同步（最終穩定版）
 function initRealtime(){
+  // 🔥 確保文件存在（第一次一定建立）
+  db.collection('orders').doc('main').set({init:true},{merge:true});
+
+  
   db.collection('orders').doc('main').onSnapshot(doc=>{
+    console.log('收到同步資料');{
     const data=doc.data()||{};
     let html='';
     let total=0;
