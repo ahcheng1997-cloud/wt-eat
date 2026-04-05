@@ -95,7 +95,11 @@ function safe(fn){try{fn()}catch(e){console.error(e)}}
 
 const firebaseConfig={apiKey:"AIzaSyDcKUiZ2FHXG6oEzJsK9D2XhnqpHspTE_c",authDomain:"wt-eat.firebaseapp.com",projectId:"wt-eat"}
 firebase.initializeApp(firebaseConfig)
-const db=firebase.firestore()
+const db=firebase.firestore();
+
+// ✅ 開啟離線快取（多人同步更穩）
+// ❌ 關閉 persistence（避免多裝置鎖死）
+// try{ db.enablePersistence({synchronizeTabs:true}); }catch(e){ console.warn('persistence fail',e);} } } }  }catch(e){ console.warn('persistence fail',e);}
 
 let userName=localStorage.getItem('userName')||('裝置_'+Math.floor(Math.random()*1000))
 localStorage.setItem('userName',userName)
@@ -161,15 +165,52 @@ saveCart()
 })}
 
 function removeItem(id){
-const el=document.getElementById(id)
-if(el){el.value=0; saveCart()}
+  try{
+    const el=document.getElementById(id)
+    if(el){el.value=0}
+
+    const field = userName + '.' + id;
+
+    db.collection('orders').doc('main').update({
+      [field]: firebase.firestore.FieldValue.delete()
+    })
+    .then(()=>{
+      console.log('刪除成功', id);
+    })
+    .catch(err=>{
+      console.error('刪除失敗', err);
+    });
+
+  }catch(e){
+    console.error('removeItem錯誤',e);
+  }
 }
 
 function saveCart(){
-let cart={}
-for(let k in prices){let el=document.getElementById(k); if(el&&el.value>0) cart[k]=parseInt(el.value)}
-db.collection('orders').doc('main').set({[userName]:cart},{merge:true})
+  try{
+    let cart={}
+    for(let k in prices){
+      let el=document.getElementById(k);
+      if(el && parseInt(el.value)>0){
+        cart[k]=parseInt(el.value)
+      }
+    }
+
+    console.log('寫入資料:',cart);
+
+    db.collection('orders').doc('main').set({[userName]:cart},{merge:true})
+      .then(()=>{
+        console.log('寫入成功');
+      })
+      .catch(err=>{
+        console.error('寫入失敗',err);
+      });
+
+  }catch(e){
+    console.error('saveCart錯誤',e);
+  }
 }
+
 
 // 🔥 即時訂單同步（已修復）
 db.collection('orders').doc('main').onSnapshot(doc=>{
