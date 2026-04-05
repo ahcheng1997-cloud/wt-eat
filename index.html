@@ -212,44 +212,47 @@ function saveCart(){
 }
 
 
-// 🔥 即時訂單同步（已修復）
-db.collection('orders').doc('main').onSnapshot(doc=>{
-  const data=doc.data()||{};
-  let html='';
-  let total=0;
+// 🔥 即時訂單同步（最終穩定版）
+function initRealtime(){
+  db.collection('orders').doc('main').onSnapshot(doc=>{
+    const data=doc.data()||{};
+    let html='';
+    let total=0;
 
-  for(let user in data){
-    let sub=0;
-    html+=`<div style="margin-top:6px"><b>${user}</b></div>`;
+    for(let user in data){
+      let sub=0;
+      html+=`<div style="margin-top:6px"><b>${user}</b></div>`;
 
-    for(let k in data[user]){
-      const qty=data[user][k];
-      const price=prices[k]||0;
-      const sum=qty*price;
-      sub+=sum;
-      total+=sum;
+      for(let k in data[user]){
+        const qty=data[user][k];
+        const price=prices[k]||0;
+        const sum=qty*price;
+        sub+=sum;
+        total+=sum;
 
-      if(user===userName){
-        html+=`<div class="order-item">
-          <span>${names[k]}</span>
-          <span>$${sum}</span>
-          <button class="delete-btn" onclick="removeItem('${k}')">刪除</button>
-        </div>`;
-      }else{
-        html+=`<div class="order-item">
-          <span>${names[k]}</span>
-          <span>$${sum}</span>
-        </div>`;
+        if(user===userName){
+          html+=`<div class="order-item">
+            <span>${names[k]||k}</span>
+            <span>$${sum}</span>
+            <button class="delete-btn" onclick="removeItem('${k}')">刪除</button>
+          </div>`;
+        }else{
+          html+=`<div class="order-item">
+            <span>${names[k]||k}</span>
+            <span>$${sum}</span>
+          </div>`;
+        }
       }
+
+      html+=`<div style="text-align:right;font-weight:bold;margin-bottom:6px;">小計：$${sub}</div>`;
     }
 
-    html+=`<div style="text-align:right;font-weight:bold;margin-bottom:6px;">小計：$${sub}</div>`;
-  }
+    document.getElementById('orderList').innerHTML=html;
+    document.getElementById('total').innerText=total;
+    document.querySelector('.order').style.display = total>0 ? 'flex' : 'none';
+  });
+}
 
-  document.getElementById('orderList').innerHTML=html;
-  document.getElementById('total').innerText=total;
-  document.querySelector('.order').style.display = total>0 ? 'flex' : 'none';
-});
 
 // 🔥 初始化（穩定版）
 document.addEventListener('DOMContentLoaded',()=>{
@@ -258,7 +261,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   ['cat1','cat2','cat3','cat4','cat5','cat6','cat7','cat8','cat9','cat10']
     .forEach(id=>document.getElementById(id)?.classList.add('hidden'));
 
-  // 版本號保證顯示（不依賴其他邏輯）
+  // ✅ 確保 menuData 載入後才啟動同步
+  setTimeout(()=>{
+    initRealtime();
+  },100);
+
+  // 版本號
   const d=new Date();
   const ver=`Ver.${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}`;
   const el=document.getElementById('versionText');
