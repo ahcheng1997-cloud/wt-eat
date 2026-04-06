@@ -4,11 +4,11 @@ import os
 
 app = Flask(**name**)
 
-# 👉 換成你的 Token
+# 🔑 你的 LINE Token（已幫你放好）
 
 CHANNEL_ACCESS_TOKEN = "XlA2IPfLH7iJYrdyzyQJ4nsO/z2QtvN9KDK5hF4lYSbDXFuBHjjba6RDGboj9b3L5blXJMrgYt8BRjpBxpRE4HEPIpyITY0IqMAuTcvfe1FCoFN309KkIAZosJJcjwUEmVLFDUxqoeLJYbAF5kxmeQdB04t89/1O/w1cDnyilFU="
 
-# 訂單資料（簡單版：存在記憶體）
+# 訂單資料（暫存在記憶體）
 
 orders = []
 
@@ -134,7 +134,7 @@ requests.post(
 )
 ```
 
-# 👉 Render 必備（最重要）
+# 👉 Render 必備（非常重要）
 
 if **name** == "**main**":
 port = int(os.environ.get("PORT", 10000))
