@@ -4,7 +4,7 @@ import os
 
 app = Flask(**name**)
 
-CHANNEL_ACCESS_TOKEN = "你的token"
+CHANNEL_ACCESS_TOKEN = "XlA2IPfLH7iJYrdyzyQJ4nsO/z2QtvN9KDK5hF4lYSbDXFuBHjjba6RDGboj9b3L5blXJMrgYt8BRjpBxpRE4HEPIpyITY0IqMAuTcvfe1FCoFN309KkIAZosJJcjwUEmVLFDUxqoeLJYbAF5kxmeQdB04t89/1O/w1cDnyilFU="
 
 orders = []
 menu = ["鍋貼", "水餃", "酸辣湯"]
