@@ -1,3 +1,10 @@
+@app.route("/", methods=["GET"])
+def home():
+    return "OK"
+
+@app.route("/", methods=["POST"])
+def webhook():
+    ...
 from flask import Flask, request
 import requests
 import os
